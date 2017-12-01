@@ -1,0 +1,47 @@
+{
+    "name": "root node",
+    "classifier": "ClassifierSimpleTFIDF",
+    "data_set": null,
+    "answer": {
+        "text": "Привет, я умею различать фрукты и домашних животных. Введите название одного из них для проверки"
+    },
+    "sub_nodes": [
+        {
+            "name": "pets",
+            "classifier": "ClassifierEqual",
+            "data_set": "train_sets/test_set_1.json",
+            "answer": {
+                "text": "Вы выбрали домашнее животное! Что с ним сделать?"
+            },
+            "sub_nodes": [
+                {
+                    "name": "play",
+                    "classifier": "ClassifierEqual",
+                    "data_set": "Поиграть",
+                    "answer": {
+                        "text": "Ваш питомец доволен"
+                    },
+                    "sub_nodes": null
+                },
+                {
+                    "name": "feed",
+                    "classifier": "ClassifierBase",
+                    "data_set": "Покормить",
+                    "answer": {
+                        "text": "Ваш питомец сыт"
+                    },
+                    "sub_nodes": null
+                }
+            ]
+        },
+        {
+            "name": "fruits",
+            "classifier": "ClassifierBase",
+            "data_set": "train_sets/test_set_2.json",
+            "answer": {
+                "text": "Вы выбрали фрукт"
+            },
+            "sub_nodes": null
+        }
+    ]
+}
