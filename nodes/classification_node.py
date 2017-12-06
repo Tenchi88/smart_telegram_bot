@@ -49,7 +49,7 @@ class ClassificationNode(object):
         self.answer.options = self.classifier.get_answers()
         if self.answer.function is not None:
             answer = eval(
-                'external_node_functions.' + self.answer.function
+                'nodes.external_node_functions.' + self.answer.function
             )(message=message, answer_params=self.answer)
             if type(answer) is AnswerMessage:
                 return answer

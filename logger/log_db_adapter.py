@@ -152,7 +152,7 @@ class Payment(Base):
             )
 
 
-class SimpleLogDBAdapter:
+class LogDBAdapter:
     _time_stamp_format = '%Y-%m-%d %H:%M:%S.%f'
 
     def __init__(

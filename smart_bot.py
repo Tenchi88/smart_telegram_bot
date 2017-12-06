@@ -19,8 +19,11 @@ from nodes.nodes_tree_generator import NodesTreeGenerator
 class SmartBot:
     def __init__(
         self,
-        logic_config='json_configs/simple_example.json',
-        telegram_cfg_path='json_configs/telegram.json'
+        logic_config='json_configs/base_test.json',
+        telegram_cfg_path='json_configs/telegram.json',
+        db_path='db/aiml.db',
+        sql_debug=False,
+        logging_lvl=logging.WARNING,
     ):
         # Read telegram token
         if os.path.exists(telegram_cfg_path):
@@ -33,10 +36,10 @@ class SmartBot:
                 )
             )
 
-        self.db_adapter = logger.log_db_adapter.SimpleLogDBAdapter(
-            db_path='db/aiml.db',
+        self.db_adapter = logger.log_db_adapter.LogDBAdapter(
+            db_path=db_path,
             create_tables=True,
-            sql_debug=False
+            sql_debug=sql_debug
         )
         self.logger = BotLogger(
             db_adapter=self.db_adapter,
@@ -59,7 +62,7 @@ class SmartBot:
         # logs on
         logging.basicConfig(
             format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            level=logging.WARNING
+            level=logging_lvl
         )
 
         # user message handlers

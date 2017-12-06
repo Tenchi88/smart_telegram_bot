@@ -110,6 +110,7 @@ ENV/
 *.log
 *.sql
 *.sqlite
+*.sqlite3
 
 ######################
 # OS generated files #
@@ -183,3 +184,4 @@ train_sets/*
 !train_sets/test_set_2.json
 !json_configs/simple_example.json
 db/*.db
+web/django_private_settings.py
