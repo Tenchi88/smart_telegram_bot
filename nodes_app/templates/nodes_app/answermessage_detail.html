@@ -1,0 +1,20 @@
+
+{% extends 'nodes_app/base.html' %}
+
+
+{% load static %}
+
+
+{% block page_content %}
+  <div class="row">
+    <div class="col-md-4">
+      <div class="well">
+        Text: {{ object.text }}<br>
+        File: {{ object.file }}<br>
+        Options: {{ object.options }}<br>
+        Function: {{ object.function }}<br>
+      </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

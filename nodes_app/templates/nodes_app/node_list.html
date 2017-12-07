@@ -2,12 +2,25 @@
 
 
 {% load static %}
+{% load mptt_tags %}
 
 
 {% block page_content %}
-      <ul>
-        {% for node in object_list %}
-          <li><a href="{% url 'node_detail' node.pk %}">{{ node.name }}</a></li>
-        {% endfor %}
+  <div class="row">
+
+    <div class="well">
+      <ul class="root">
+        {% recursetree nodes %}
+          <li>
+            <a href="{% url 'node_detail' node.pk %}">{{ node.name }} ({{ node.description }})</a></li>
+            {% if not node.is_leaf_node %}
+              <ul class="children">
+                  {{ children }}
+              </ul>
+            {% endif %}
+          </li>
+        {% endrecursetree %}
       </ul>
+    </div>
+  </div>
 {% endblock %}

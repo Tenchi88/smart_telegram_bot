@@ -19,7 +19,7 @@ from nodes.nodes_tree_generator import NodesTreeGenerator
 class SmartBot:
     def __init__(
         self,
-        logic_config='json_configs/base_test.json',
+        logic_config='json_configs/simple_example.json',
         telegram_cfg_path='json_configs/telegram.json',
         db_path='db/aiml.db',
         sql_debug=False,
@@ -92,8 +92,7 @@ class SmartBot:
         self.send_message(
             bot,
             update.message.chat_id,
-            text=u'Привет, я умею различать фрукты и домашних животных. Введите'
-                 u' название одного из них для проверки'
+            text=self.nodes_tree.root_node.answer.text
         )
 
     # command /uptime
@@ -188,5 +187,9 @@ class SmartBot:
 
 
 if __name__ == '__main__':
-    chat_bot = SmartBot()
+    your_json_config = 'json_configs/base_test.json'
+    if os.path.exists(your_json_config):
+        chat_bot = SmartBot(logic_config=your_json_config)
+    else:
+        chat_bot = SmartBot()
     chat_bot.run()

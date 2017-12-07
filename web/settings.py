@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'graphene_django',
     'django_extensions',
     'debug_toolbar',
+    'mptt',
 
     'nodes_app',
 ]

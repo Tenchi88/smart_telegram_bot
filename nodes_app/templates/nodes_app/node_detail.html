@@ -1,3 +1,4 @@
+
 {% extends 'nodes_app/base.html' %}
 
 
@@ -8,8 +9,12 @@
   <div class="row">
     <div class="col-md-4">
       <h2>{{ object.name }}</h2>
-      <div class="well">{{ object.description }}<br>
-      Parent node: <a href="{% url 'node_detail' object.parent_node.pk %}">{{ object.parent_node.name }}</a></div>
+      <div class="well">
+        {{ object.description }}<br>
+        Classifier: <a href="{% url 'classifier_detail' object.classifier.pk %}">{{ object.classifier.name }}</a><br>
+        Data set: {{ object.data_set }}<br>
+        Answer message: <a href="{% url 'answer_message_detail' object.answer_message.pk %}">{{ object.answer_message }}</a><br>
+      </div>
       </div>
     </div>
   </div>

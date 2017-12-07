@@ -9,17 +9,27 @@ from web.schema import schema
 from nodes_app import views as nodes_views
 
 urlpatterns = [
+    url(r'^$', nodes_views.show_nodes, name='index'),
     url(r'^admin/', admin.site.urls),
     url(r'^graphql', GraphQLView.as_view(graphiql=True, schema=schema)),
-    url(r'^nodes/$', nodes_views.NodeListView.as_view()),
+    url(r'^nodes/$', nodes_views.show_nodes),
     url(
-        r'^nodes/(?P<pk>[0-9]+)/$',
-        nodes_views.NodeDetailView.as_view(),
-        name='node_detail',
+      r'^nodes/(?P<pk>[0-9]+)/$',
+      nodes_views.NodeDetailView.as_view(),
+      name='node_detail',
+    ),
+    url(
+      r'^classifiers/(?P<pk>[0-9]+)/$',
+      nodes_views.ClassifierDetailView.as_view(),
+      name='classifier_detail',
+    ),
+    url(
+      r'^answer_messages/(?P<pk>[0-9]+)/$',
+      nodes_views.AnswerMessageDetailView.as_view(),
+      name='answer_message_detail',
     ),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
   + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
 
 if settings.DEBUG:
     import debug_toolbar

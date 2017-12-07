@@ -63,6 +63,8 @@ class ClassificationNode(object):
                 'Error: classifier is not set.\n{}'.format(self)
             )
         node = self.classifier.predict(message=message)
+        if type(node) is not ClassificationNode:
+            return None, node
         return node, node.answer_message(message)
 
     def add_sub_node(self, sub_node):

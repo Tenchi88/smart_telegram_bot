@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
+from mptt.models import MPTTModel, TreeForeignKey
 
 
-class Node(models.Model):
-    name = models.CharField(max_length=256)
+class Node(MPTTModel):
+    name = models.CharField(max_length=256, unique=True)
     description = models.CharField(max_length=256)
     classifier = models.ForeignKey('Classifier', related_name='nodes')
     data_set = models.CharField(max_length=256, null=True, blank=True)
     answer_message = models.ForeignKey('AnswerMessage', related_name='nodes')
-    parent_node = models.ForeignKey(
-        'self', on_delete=models.CASCADE,
-        null=True, blank=True,
-        related_name='sub_nodes',
-        related_query_name="sub_node",
+
+    parent = TreeForeignKey(
+        'self', null=True, blank=True, related_name='children', db_index=True
     )
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
 
     def __str__(self):
         return self.name
@@ -34,4 +36,12 @@ class AnswerMessage(models.Model):
     function = models.CharField(max_length=256, null=True, blank=True)
 
     def __str__(self):
-        return self.text
+        if self.text is not None:
+            return ' \'{}\''.format(self.text)
+        if self.function is not None:
+            return ' Function: \'{}\''.format(self.function)
+        if self.file is not None:
+            return ' File: \'{}\''.format(self.file)
+        if self.options is not None:
+            return ' Options: \'{}\''.format(self.options)
+        return ''

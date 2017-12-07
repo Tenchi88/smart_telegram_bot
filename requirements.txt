@@ -13,3 +13,4 @@ graphene-django==2.0.0
 ipython==6.1.0
 Werkzeug==0.12.2
 Pillow==4.2.1
+django-mptt==0.8.7

@@ -1,6 +1,7 @@
 # coding: utf-8
 
 from classifiers.classifier_base import ClassifierBase, ClassifierBaseDataSet
+from nodes.answer_message import AnswerMessage
 
 
 class ClassifierEqual(ClassifierBase):
@@ -11,9 +12,12 @@ class ClassifierEqual(ClassifierBase):
 
     def predict(self, message):
         for option in self.options.values():
-            if message == option.data_set.text:
+            if message.lower() == option.data_set.text.lower():
                 return option
-        return None
+        answer = AnswerMessage(
+            text='Опция \'{}\' не поддерживается'.format(message)
+        )
+        return answer
 
     def add_option(self, option):
         self.check_data_set_type(option.data_set)
