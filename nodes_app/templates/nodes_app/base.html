@@ -22,13 +22,15 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{% url 'index' %}">Nodes tree editor</a>
+          <a class="navbar-brand" href="{% url 'index' %}">Редактор SmartBot'а</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="{% url 'index' %}">Show tree</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li class="active"><a href="{% url 'index' %}">Показать дерево</a></li>
+            <li><a href="{% url 'gen_nodes' %}">Сгенерировать дерево</a></li>
+            <li><a href="{% url 'search_nodes' %}">Поиск по дереву</a></li>
+            <li><a href="{% url 'classifier_list' %}">Классификаторы</a></li>
+            <li><a href="{% url 'answer_message_list' %}">Сообщения</a></li>
           </ul>
         </div>
       </div>

@@ -14,6 +14,18 @@ urlpatterns = [
     url(r'^graphql', GraphQLView.as_view(graphiql=True, schema=schema)),
     url(r'^nodes/$', nodes_views.show_nodes),
     url(
+        r'^classifiers/$',
+        nodes_views.ClassifierListView.as_view(),
+        name='classifier_list'
+    ),
+    url(
+        r'^answer_messages/$',
+        nodes_views.AnswerMessageListView.as_view(),
+        name='answer_message_list'
+    ),
+    url(r'^gen_nodes/$', nodes_views.gen_nodes, name='gen_nodes'),
+    url(r'^search_nodes/$', nodes_views.search_nodes, name='search_nodes'),
+    url(
       r'^nodes/(?P<pk>[0-9]+)/$',
       nodes_views.NodeDetailView.as_view(),
       name='node_detail',

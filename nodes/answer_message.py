@@ -7,16 +7,16 @@ class AnswerMessage(object):
             text=None,
             file=None,
             options=None,
-            function_=None
+            function_name=None
     ):
         AnswerMessage._param_type_check('Text', text, str)
         AnswerMessage._param_type_check('File', file, str)
         AnswerMessage._param_type_check('Options', options, list)
-        AnswerMessage._param_type_check('Function', function_, str)
+        AnswerMessage._param_type_check('Function', function_name, str)
         self.text = text
         self.file = file
         self.options = options
-        self.function = function_
+        self.function = function_name
 
     @staticmethod
     def _param_type_check(param_name, val, _type):

@@ -20,12 +20,46 @@ class ClassifierDetailView(DetailView):
     model = models.Classifier
 
 
+class ClassifierListView(ListView):
+    model = models.Classifier
+
+
 class AnswerMessageDetailView(DetailView):
+    model = models.AnswerMessage
+
+
+class AnswerMessageListView(ListView):
     model = models.AnswerMessage
 
 
 def show_nodes(request, **kwargs):
     return render_to_response(
         "nodes_app/node_list.html",
-        {'nodes':models.Node.objects.all()}
+        {'nodes': models.Node.objects.all()}
+    )
+
+
+def gen_nodes(request, **kwargs):
+    config = models.ConfigParser(json_config='json_configs/base_test.json')
+    config.gen_full_tree()
+    return render_to_response(
+        "nodes_app/node_list.html",
+        {'nodes': models.Node.objects.all()}
+    )
+
+
+def search_nodes(request, **kwargs):
+    config = models.ConfigParser(json_config='json_configs/base_test.json')
+    node = config.search('Подключение через роутер')
+    # return render_to_response(
+    #     "nodes_app/classifier_detail.html",
+    #     {'object': node}
+    # )
+    return render_to_response(
+        "nodes_app/node_detail.html",
+        {
+            'object': node,
+            'classifiers': models.Classifier.objects.all(),
+            'answer_messages': models.AnswerMessage.objects.all()
+        }
     )

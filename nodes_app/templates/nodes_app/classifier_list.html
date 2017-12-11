@@ -1,0 +1,23 @@
+
+{% extends 'nodes_app/base.html' %}
+
+
+{% load static %}
+
+
+{% block page_content %}
+  <div class="row">
+    <div class="col-md-8">
+      <h2>Список доступных классификаторов:</h2>
+      <div class="well">
+        {% for classifier in object_list %}
+        <ul>
+          <li>
+            <a href="{% url 'classifier_detail' classifier.pk %}">{{ classifier.name }}</a>
+          </li>
+        </ul>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

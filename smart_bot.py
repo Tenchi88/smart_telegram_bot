@@ -188,6 +188,8 @@ class SmartBot:
 
 if __name__ == '__main__':
     your_json_config = 'json_configs/base_test.json'
+    # your_json_config = 'json_configs/base_test_td_idf.json'
+    # your_json_config = 'json_configs/base_test_spacy.json'
     if os.path.exists(your_json_config):
         chat_bot = SmartBot(logic_config=your_json_config)
     else:

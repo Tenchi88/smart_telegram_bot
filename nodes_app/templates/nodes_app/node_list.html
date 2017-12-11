@@ -6,15 +6,15 @@
 
 
 {% block page_content %}
+<div class="container">
   <div class="row">
-
-    <div class="well">
-      <ul class="root">
+    <div class="col-md-12">
+      <ul class="treeview">
         {% recursetree nodes %}
           <li>
-            <a href="{% url 'node_detail' node.pk %}">{{ node.name }} ({{ node.description }})</a></li>
+            <a href="{% url 'node_detail' node.pk %}">{{ node.name }}</a>
             {% if not node.is_leaf_node %}
-              <ul class="children">
+              <ul>
                   {{ children }}
               </ul>
             {% endif %}
@@ -23,4 +23,9 @@
       </ul>
     </div>
   </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/boot_tree.js' %}"></script>
 {% endblock %}

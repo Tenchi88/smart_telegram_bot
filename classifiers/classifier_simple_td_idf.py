@@ -7,6 +7,8 @@ from sklearn.naive_bayes import MultinomialNB
 from jsonschema import Draft3Validator
 from json import load
 from classifiers.classifier_base import ClassifierBase, ClassifierBaseDataSet
+from nodes.answer_message import AnswerMessage
+from urllib import request
 
 
 class ClassifierSimpleTFIDF(ClassifierBase):
@@ -18,6 +20,7 @@ class ClassifierSimpleTFIDF(ClassifierBase):
         self.clf = None
         self.tfidf_transformer = None
         self.options = {}
+        self.threshold = 0.3
 
     def __repr__(self):
         return '<{}> Is trained: {} Data sets: {}'.format(
@@ -29,7 +32,19 @@ class ClassifierSimpleTFIDF(ClassifierBase):
         x_train_counts_tst = self.count_vect.transform([message])
         x_train_tfidf_tst = self.tfidf_transformer.transform(x_train_counts_tst)
         set_number = self.clf.predict(x_train_tfidf_tst)
-        return self.options[self.data_sets[set_number[0]]]
+        proba = self.clf.predict_proba(x_train_tfidf_tst)[0]
+        sorted_proba = proba.copy()
+        sorted_proba.sort()
+        threshold = sorted_proba[1]*(1.0+self.threshold)
+        print('{} thr {}'.format(proba, threshold))
+        if proba[set_number[0]] >= threshold:
+            return self.options[self.data_sets[set_number[0]]]
+        answer = AnswerMessage(
+            text='Ищу в Google https://google.ru/search?q={}'.format(
+                request.quote(message.encode('cp1251'))
+            )
+        )
+        return answer
 
     def add_option(self, option):
         self.check_data_set_type(option.data_set)

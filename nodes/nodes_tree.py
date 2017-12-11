@@ -12,9 +12,6 @@ class NodesTree:
 
     def parse_message(self, message):
         self.current_node, answer = self.current_node.parse_message(message)
-        # TODO: remove
-        print(self.current_node)
-        print(answer)
         if self.current_node is None:
             self.current_node = self.root_node
         if len(self.current_node.sub_nodes) < 1:

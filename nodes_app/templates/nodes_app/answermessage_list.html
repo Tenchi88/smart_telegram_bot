@@ -1,0 +1,21 @@
+
+{% extends 'nodes_app/base.html' %}
+
+
+{% load static %}
+
+
+{% block page_content %}
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Список доступных сообщений пользователю:</h2>
+      <div class="well">
+        <ul>
+          {% for answer_message in object_list %}
+            <li><a href="{% url 'answer_message_detail' answer_message.pk %}">{{ answer_message }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endblock %}

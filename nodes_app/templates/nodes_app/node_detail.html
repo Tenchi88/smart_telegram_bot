@@ -3,19 +3,85 @@
 
 
 {% load static %}
+{% load mptt_tags %}
 
 
 {% block page_content %}
-  <div class="row">
-    <div class="col-md-4">
-      <h2>{{ object.name }}</h2>
-      <div class="well">
-        {{ object.description }}<br>
-        Classifier: <a href="{% url 'classifier_detail' object.classifier.pk %}">{{ object.classifier.name }}</a><br>
-        Data set: {{ object.data_set }}<br>
-        Answer message: <a href="{% url 'answer_message_detail' object.answer_message.pk %}">{{ object.answer_message }}</a><br>
-      </div>
-      </div>
+<div class="row">
+  <div class="col-md-8">
+    <h2>{{ object.name }}</h2>
+    <div class="well">
+      {{ object.description }}<br>
+      Текущий классификатор: <a href="{% url 'classifier_detail' object.classifier.pk %}">{{ object.classifier.name }}</a><br>
+      Набор данных: {{ object.data_set }}<br>
+      Сообщение: <a href="{% url 'answer_message_detail' object.answer_message.pk %}">{{ object.answer_message }}</a><br>
     </div>
+
+<form class="form-horizontal">
+
+<!-- Form Name -->
+<legend>Редактирование узла</legend>
+
+<fieldset>
+<!-- Select Basic -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="select_classifier">Выбор классификатора</label>
+  <div class="col-md-8">
+    <select id="select_classifier" name="select_classifier" class="form-control">
+      {% for classifier in classifiers %}
+        {% if classifier.pk == object.classifier.pk %}
+          <option selected value="{{ classifier.pk }}">{{ classifier.name }}</option>
+        {% else %}
+          <option value="{{ classifier.pk }}">{{ classifier.name }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
   </div>
+</div>
+<!-- Select Basic -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="select_answer_message">Выбор сообщения</label>
+  <div class="col-md-8">
+    <select id="select_answer_message" name="select_answer_message" class="form-control">
+      {% for answer_message in answer_messages %}
+        {% if answer_message.pk == object.answer_message.pk %}
+          <option selected value="{{ answer_message.pk }}">{{ answer_message }}</option>
+        {% else %}
+          <option value="{{ answer_message.pk }}">{{ answer_message }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+  </div>
+</div>
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="data_set">Набор данных</label>
+  <div class="col-md-8">
+  <input id="data_set" name="data_set" type="text" placeholder="{{ object.data_set }}" class="form-control input-md">
+  <span class="help-block">Введите текстовые данные для узла сдесь, либо выберете файл ниже</span>
+  </div>
+</div>
+<!-- File Button -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="data_set_file_button">Файл с набором данных</label>
+  <div class="col-md-4">
+    <input id="data_set_file_button" name="data_set_file_button" class="input-file" type="file">
+  </div>
+</div>
+<!-- Button -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="save_button"></label>
+  <div class="col-md-4">
+    <button id="save_button" name="save_button" class="btn btn-primary js_save_button">Сохранить</button>
+  </div>
+</div>
+
+</fieldset>
+</form>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/update_node.js' %}"></script>
 {% endblock %}
