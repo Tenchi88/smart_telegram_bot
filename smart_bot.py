@@ -5,6 +5,7 @@ import logging
 import os.path
 import time
 import json
+from os import environ
 
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import CommandHandler
@@ -26,7 +27,9 @@ class SmartBot:
         logging_lvl=logging.WARNING,
     ):
         # Read telegram token
-        if os.path.exists(telegram_cfg_path):
+        if 'SMART_BOT_TOKEN' in environ:
+            self.tg_token = environ['SMART_BOT_TOKEN']
+        elif os.path.exists(telegram_cfg_path):
             with open(telegram_cfg_path, 'r') as config:
                 self.tg_token = json.load(config)['token']
         else:
@@ -187,9 +190,9 @@ class SmartBot:
 
 
 if __name__ == '__main__':
-    your_json_config = 'json_configs/base_test.json'
+    # your_json_config = 'json_configs/base_test.json'
     # your_json_config = 'json_configs/base_test_td_idf.json'
-    # your_json_config = 'json_configs/base_test_spacy.json'
+    your_json_config = 'json_configs/base_test_spacy.json'
     if os.path.exists(your_json_config):
         chat_bot = SmartBot(logic_config=your_json_config)
     else:
