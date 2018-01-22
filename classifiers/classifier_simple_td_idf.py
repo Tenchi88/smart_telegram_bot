@@ -56,7 +56,7 @@ class ClassifierSimpleTFIDF(ClassifierBase):
         set_name = option.name
         self.options[option.name] = option
         self.data_sets.append(set_name)
-        with open(option.data_set.train_set, 'r') as train_file:
+        with open(option.data_set.train_set, 'r', encoding='utf-8') as train_file:
             self.texts[set_name] = load(train_file)['data']
         self.is_trained = False
 
@@ -112,7 +112,7 @@ class ClassifierSimpleTFIDF(ClassifierBase):
                     'data': {'type': 'array'}
                 }
             }
-            with open(train_set, 'r') as train_file:
+            with open(train_set, 'r', encoding='utf-8') as train_file:
                 train_data = load(train_file)
             if not Draft3Validator(schema).is_valid(train_data):
                 exception_data = ['Validation error in: {}'.format(train_data)]

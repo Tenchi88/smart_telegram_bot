@@ -67,7 +67,7 @@ class BotLogger:
             # write to csv file
             csv_file_name = str(entry['user_id']) + '.csv'
             write_header = not os.path.exists(csv_file_name)
-            with open(csv_file_name, 'a') as csv_file:
+            with open(csv_file_name, 'a', encoding='utf-8') as csv_file:
                 writer = csv.DictWriter(
                     csv_file,
                     delimiter='\t',

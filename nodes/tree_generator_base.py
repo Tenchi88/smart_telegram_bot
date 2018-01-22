@@ -38,7 +38,7 @@ class TreeGeneratorBase:
         if json_config is None or not os.path.isfile(json_config):
             raise ValueError('Path to .json config file has to be specified.'
                              'Wrong path: {}'.format(json_config))
-        with open(json_config, 'r') as config:
+        with open(json_config, 'r', encoding='utf-8') as config:
             self.json_data = json.load(config)
 
     def validate_node(self, json_node):

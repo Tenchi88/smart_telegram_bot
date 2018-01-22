@@ -30,7 +30,7 @@ class SmartBot:
         if 'SMART_BOT_TOKEN' in environ:
             self.tg_token = environ['SMART_BOT_TOKEN']
         elif os.path.exists(telegram_cfg_path):
-            with open(telegram_cfg_path, 'r') as config:
+            with open(telegram_cfg_path, 'r', encoding='utf-8') as config:
                 self.tg_token = json.load(config)['token']
         else:
             raise ValueError(
