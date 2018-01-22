@@ -6,6 +6,8 @@ from django.conf.urls.static import static
 from graphene_django.views import GraphQLView
 
 from web.schema import schema
+# -*- coding: utf-8 -*-
+
 from nodes_app import views as nodes_views
 
 urlpatterns = [

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.base import TransformerMixin
 from sklearn.pipeline import Pipeline

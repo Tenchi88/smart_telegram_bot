@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from nodes.classification_node import ClassificationNode
 from nodes.nodes_tree import NodesTree
 from nodes.answer_message import AnswerMessage
@@ -32,6 +34,7 @@ class NodesTreeGenerator(TreeGeneratorBase):
     ):
         self.validate_node(json_node)
         new_node = ClassificationNode(
+
             json_node['name'],
             data_set=self._get_data_set(json_node, data_set_type),
             classifier=eval(json_node['classifier'])(),

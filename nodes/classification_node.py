@@ -1,4 +1,4 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 
 from classifiers.classifier_base import ClassifierBase
 from classifiers.classifier_equal import ClassifierEqual

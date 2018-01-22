@@ -1,5 +1,4 @@
-# coding: utf-8
-
+# -*- coding: utf-8 -*-
 
 class AnswerMessage(object):
     def __init__(

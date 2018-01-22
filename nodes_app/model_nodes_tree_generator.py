@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from nodes.tree_generator_base import TreeGeneratorBase
 from nodes_app.models import *
 

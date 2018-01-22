@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import graphene
 
 from nodes_app import schema as nodes_schema

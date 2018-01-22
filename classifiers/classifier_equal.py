@@ -1,4 +1,4 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 
 from classifiers.classifier_base import ClassifierBase, ClassifierBaseDataSet
 from nodes.answer_message import AnswerMessage

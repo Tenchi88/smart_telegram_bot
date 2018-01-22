@@ -184,4 +184,5 @@ train_sets/*
 !train_sets/test_set_2.json
 !json_configs/simple_example.json
 db/*.db
+*.sqlite3
 web/django_private_settings.py
