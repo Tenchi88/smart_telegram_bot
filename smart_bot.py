@@ -15,6 +15,7 @@ from telegram.ext import Updater
 from logger.bot_logger import BotLogger
 import logger.log_db_adapter
 from nodes.nodes_tree_generator import NodesTreeGenerator
+import nltk
 
 
 class SmartBot:
@@ -190,6 +191,8 @@ class SmartBot:
 
 
 if __name__ == '__main__':
+    # for classifier spacy
+    nltk.download('stopwords')
     # your_json_config = 'json_configs/base_test.json'
     # your_json_config = 'json_configs/base_test_td_idf.json'
     your_json_config = 'json_configs/base_test_spacy.json'
