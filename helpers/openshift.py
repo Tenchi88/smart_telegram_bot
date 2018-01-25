@@ -1,7 +1,8 @@
-from os import environ
-import os
+from os import environ, mkdir, path
 
-os.mkdir('/root/.ssh', 400)
+ssh_path = '/root/.ssh/'
+if not path.exists(ssh_path):
+    mkdir(ssh_path, 400)
 k = environ['GIT_LAB_KEY']
-with open('/root/.ssh/git_lab', 'w') as f:
+with open(ssh_path + 'git_lab', 'w') as f:
     f.write(k)
