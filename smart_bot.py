@@ -17,6 +17,9 @@ import logger.log_db_adapter
 from nodes.nodes_tree_generator import NodesTreeGenerator
 import nltk
 
+import telegram
+from telegram.error import NetworkError, Unauthorized
+
 
 class SmartBot:
     def __init__(
@@ -52,8 +55,16 @@ class SmartBot:
         )
 
         # инициализация telegram
-        self.updater = Updater(token=self.tg_token)
-        self.dispatcher = self.updater.dispatcher
+        self.update_id = None
+        self.bot = telegram.Bot(token=self.tg_token)
+
+        try:
+            self.update_id = self.bot.get_updates()[0].update_id
+        except IndexError:
+            self.update_id = None
+
+        # self.updater = Updater(token=self.tg_token)
+        # self.dispatcher = self.updater.dispatcher
 
         self.current_class = None
 
@@ -69,21 +80,21 @@ class SmartBot:
             level=logging_lvl
         )
 
-        # user message handlers
-        self.start_handler = CommandHandler('start', self.start)
-        self.dispatcher.add_handler(self.start_handler)
-
-        self.uptime_handler = CommandHandler('uptime', self.uptime)
-        self.dispatcher.add_handler(self.uptime_handler)
-
-        self.build_time_handler = CommandHandler('buildtime', self.buildtime)
-        self.dispatcher.add_handler(self.build_time_handler)
-
-        self.echo_handler = MessageHandler(Filters.text, self.echo)
-        self.dispatcher.add_handler(self.echo_handler)
-
-        self.voice_handler = MessageHandler(Filters.voice, self.voice)
-        self.dispatcher.add_handler(self.voice_handler)
+        # # user message handlers
+        # self.start_handler = CommandHandler('start', self.start)
+        # self.dispatcher.add_handler(self.start_handler)
+        #
+        # self.uptime_handler = CommandHandler('uptime', self.uptime)
+        # self.dispatcher.add_handler(self.uptime_handler)
+        #
+        # self.build_time_handler = CommandHandler('buildtime', self.buildtime)
+        # self.dispatcher.add_handler(self.build_time_handler)
+        #
+        # self.echo_handler = MessageHandler(Filters.text, self.echo)
+        # self.dispatcher.add_handler(self.echo_handler)
+        #
+        # self.voice_handler = MessageHandler(Filters.voice, self.voice)
+        # self.dispatcher.add_handler(self.voice_handler)
 
         # initial data
         self.run_time = datetime.datetime.now()
@@ -164,38 +175,71 @@ class SmartBot:
                 )
 
     # non-command text
-    def echo(self, bot, update):
-        msg = update.message.text
-        self.logger.add_user_message(update.message)
-        if msg == 'отмена':
-            answer = self.nodes_tree.go_to_root(msg)
-        else:
-            answer = self.nodes_tree.parse_message(msg)
-        self.logger.add_classification(self.nodes_tree.current_node_name)
-        self.send_message(
-            bot,
-            update.message.chat_id,
-            text=answer.text,
-            file=answer.file,
-            options=answer.options
-        )
+    def echo(self, bot):
+        for update in bot.get_updates(offset=self.update_id, timeout=10):
+            self.update_id = update.update_id + 1
+
+            if len(update.message.entities) and update.message.entities[0].type == 'bot_command':
+                eval('self.{}(bot, update)'.format(update.message.text[1:]))
+                return
+
+            msg = update.message.text
+            self.logger.add_user_message(update.message)
+            if msg == 'отмена':
+                answer = self.nodes_tree.go_to_root(msg)
+            else:
+                answer = self.nodes_tree.parse_message(msg)
+            self.logger.add_classification(self.nodes_tree.current_node_name)
+            self.send_message(
+                bot,
+                update.message.chat_id,
+                text=answer.text,
+                file=answer.file,
+                options=answer.options
+            )
+
+    # def echo(self, bot, update):
+    #     msg = update.message.text
+    #     self.logger.add_user_message(update.message)
+    #     if msg == 'отмена':
+    #         answer = self.nodes_tree.go_to_root(msg)
+    #     else:
+    #         answer = self.nodes_tree.parse_message(msg)
+    #     self.logger.add_classification(self.nodes_tree.current_node_name)
+    #     self.send_message(
+    #         bot,
+    #         update.message.chat_id,
+    #         text=answer.text,
+    #         file=answer.file,
+    #         options=answer.options
+    #     )
 
     def run(self):
-        try:
-            self.updater.start_polling()
-        except (KeyboardInterrupt, EOFError, SystemExit):
-            print('Stop polling')
-            self.updater.idle()
-        except Exception as e:
-            print(e)
+        while True:
+            try:
+                self.echo(self.bot)
+            except NetworkError:
+                time.sleep(0.1)
+            except Unauthorized:
+                # The user has removed or blocked the bot.
+                self.update_id += 1
+        # try:
+        #     self.updater.stop()
+        #     self.updater.start_polling()
+        # except (KeyboardInterrupt, EOFError, SystemExit):
+        #     print('Stop polling')
+        #     self.updater.idle()
+        # except Exception as e:
+        #     print(e)
 
 
 if __name__ == '__main__':
     # for classifier spacy
-    nltk.download('stopwords')
+    # nltk.download('stopwords')
     # your_json_config = 'json_configs/base_test.json'
     # your_json_config = 'json_configs/base_test_td_idf.json'
-    your_json_config = 'json_configs/base_test_spacy.json'
+    # your_json_config = 'json_configs/base_test_spacy.json'
+    your_json_config = 'json_configs/pgu_example.json'
     if os.path.exists(your_json_config):
         chat_bot = SmartBot(logic_config=your_json_config)
     else:

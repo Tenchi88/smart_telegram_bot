@@ -12,7 +12,7 @@ class ClassificationNode(object):
             self, name, data_set=None, answer=None, classifier=None
     ):
         if type(name) is not str:
-            raise TypeError('ClassificationNode name has to be str', name)
+            raise TypeError('ClassificationNode name must be str', name)
         self.name = name
         self.sub_nodes = []
         self.classifier = ClassifierBase()
