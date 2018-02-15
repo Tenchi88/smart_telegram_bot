@@ -25,6 +25,12 @@ class NodesTree:
         self.current_node = self.root_node
         return self.current_node.answer_message(message)
 
+    @staticmethod
+    def train_tree(node):
+        for sub_node in node.sub_nodes:
+            NodesTree.train_tree(sub_node)
+        node.train_classifier()
+
     @property
     def current_node_name(self):
         return self.current_node.name

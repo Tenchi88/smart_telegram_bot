@@ -6,6 +6,7 @@ import os.path
 import time
 import json
 from os import environ
+import sys
 
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import CommandHandler
@@ -19,6 +20,8 @@ import nltk
 
 import telegram
 from telegram.error import NetworkError, Unauthorized
+
+from dialog_manager.dialog_manager import DialogManager
 
 
 class SmartBot:
@@ -102,6 +105,8 @@ class SmartBot:
         self.source_file = __file__
         self.build_time = os.path.getmtime(self.source_file)
 
+        self.dialog_manager = DialogManager(self.nodes_tree)
+
     # command /start
     def start(self, bot, update):
         self.send_message(
@@ -146,10 +151,20 @@ class SmartBot:
         voice_file.download(custom_path='voice_tmp.oga')
 
     def send_message(self, bot, chat_id, text=None, file=None, options=None):
+        # if options:
+        #     self.custom_keyboard = [val for val in options]
+        #     self.custom_keyboard.append([u'отмена'])
+        #     reply_markup = ReplyKeyboardMarkup(self.custom_keyboard)
+        # else:
+        #     reply_markup = ReplyKeyboardRemove(remove_keyboard=True)
+        #     self.custom_keyboard = None
         if options:
             self.custom_keyboard = [val for val in options]
             self.custom_keyboard.append([u'отмена'])
-            reply_markup = ReplyKeyboardMarkup(self.custom_keyboard)
+            reply_markup = ReplyKeyboardMarkup(
+                self.custom_keyboard,
+                one_time_keyboard=True
+            )
         else:
             reply_markup = ReplyKeyboardRemove(remove_keyboard=True)
             self.custom_keyboard = None
@@ -176,20 +191,20 @@ class SmartBot:
 
     # non-command text
     def echo(self, bot):
-        for update in bot.get_updates(offset=self.update_id, timeout=10):
+        for update in bot.get_updates(offset=self.update_id, timeout=1):
             self.update_id = update.update_id + 1
 
-            if len(update.message.entities) and update.message.entities[0].type == 'bot_command':
+            if (
+                    len(update.message.entities)
+                    and update.message.entities[0].type == 'bot_command'
+            ):
                 eval('self.{}(bot, update)'.format(update.message.text[1:]))
                 return
 
-            msg = update.message.text
-            self.logger.add_user_message(update.message)
-            if msg == 'отмена':
-                answer = self.nodes_tree.go_to_root(msg)
-            else:
-                answer = self.nodes_tree.parse_message(msg)
-            self.logger.add_classification(self.nodes_tree.current_node_name)
+            answer, current_node_name = self.dialog_manager.parse_message(
+                update.message
+            )
+            self.logger.add_classification(current_node_name)
             self.send_message(
                 bot,
                 update.message.chat_id,
@@ -223,6 +238,9 @@ class SmartBot:
             except Unauthorized:
                 # The user has removed or blocked the bot.
                 self.update_id += 1
+            except Exception as e:
+                print(e)
+                sys.exit()
         # try:
         #     self.updater.stop()
         #     self.updater.start_polling()
@@ -238,8 +256,8 @@ if __name__ == '__main__':
     # nltk.download('stopwords')
     # your_json_config = 'json_configs/base_test.json'
     # your_json_config = 'json_configs/base_test_td_idf.json'
-    # your_json_config = 'json_configs/base_test_spacy.json'
-    your_json_config = 'json_configs/pgu_example.json'
+    your_json_config = 'json_configs/base_test_spacy.json'
+    # your_json_config = 'json_configs/pgu_example.json'
     if os.path.exists(your_json_config):
         chat_bot = SmartBot(logic_config=your_json_config)
     else:

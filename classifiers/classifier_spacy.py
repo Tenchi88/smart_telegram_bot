@@ -23,7 +23,7 @@ from nodes.answer_message import AnswerMessage
 
 class ClassifierSpacy(ClassifierBase):
     def __init__(self):
-        self.is_trained = False
+        super(ClassifierSpacy, self).__init__()
         self.data_sets = []
         self.texts = {}
         self.options = {}
@@ -60,21 +60,23 @@ class ClassifierSpacy(ClassifierBase):
         return '<{}> Data sets: {}'.format(
             type(self).__name__, self.options)
 
-    def predict(self, message, auto_train=True):
+    def predict(self, message, auto_train=True, verbose=False):
         if auto_train and not self.is_trained:
             self.train()
-            # print('support_', self.clf.support_)
-            print('coef_', self.clf.coef_)
-            # print('dual_coef_', self.clf.dual_coef_)
-            print('intercept_', self.clf.intercept_)
-        print(message)
+            if verbose:
+                # print('support_', self.clf.support_)
+                print('coef_', self.clf.coef_)
+                # print('dual_coef_', self.clf.dual_coef_)
+                print('intercept_', self.clf.intercept_)
         preds = self.pipe.predict([message])
-        print(preds)
-        print(message)
+        if verbose:
+            print(preds)
+            print(message)
         probs = self.pipe.predict_proba([message])
         # probs = self.pipe.decision_function([message])
         # probs = self.pipe.score([message], ['Услуги'])
-        print('predict_proba', self.pipe.predict_proba([message]))
+        if verbose:
+            print('predict_proba', self.pipe.predict_proba([message]))
         # print('decision_function', self.pipe.decision_function([message]))
         # intercept_x_decision = []
         # for i in range(len(probs[0])):
@@ -109,18 +111,21 @@ class ClassifierSpacy(ClassifierBase):
         self.is_trained = False
         self.texts = {}
 
-    def train(self):
+    def train(self, verbose=False):
         train = []
         labels_train = []
-        print('train')
+        if verbose:
+            print('train')
         for data_set in self.data_sets:
-            print('data_set', data_set)
+            if verbose:
+                print('data_set', data_set)
             for text in self.texts[data_set]:
                 train.append(text)
                 labels_train.append(data_set)
 
-        for i in range(len(train)):
-            print(train[i], labels_train[i])
+        if verbose:
+            for i in range(len(train)):
+                print(train[i], labels_train[i])
 
         # train
         self.pipe.fit(train, labels_train)

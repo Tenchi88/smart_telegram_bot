@@ -43,6 +43,9 @@ class ClassificationNode(object):
             )
         self.classifier = classifier
 
+    def train_classifier(self):
+        self.classifier.train()
+
     def answer_message(self, message):
         if self.answer is None:
             raise ValueError('Answer has to be not None in {}'.format(self))

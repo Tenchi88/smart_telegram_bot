@@ -11,13 +11,16 @@ class ClassifierBaseDataSet(object):
 
 class ClassifierBase(object):
     def __init__(self):
-        pass
+        self.is_trained = False
 
     def predict(self, message):
         pass
 
     def add_option(self, option):
         pass
+
+    def train(self):
+        self.is_trained = True
 
     def json_data_set_validate(self, json_data_set):
         validate(json_data_set, self.DataSet.schema)

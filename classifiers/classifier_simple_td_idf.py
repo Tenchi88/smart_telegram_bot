@@ -13,7 +13,6 @@ from urllib import request
 
 class ClassifierSimpleTFIDF(ClassifierBase):
     def __init__(self):
-        self.is_trained = False
         self.data_sets = []
         self.texts = {}
         self.count_vect = None
@@ -36,9 +35,10 @@ class ClassifierSimpleTFIDF(ClassifierBase):
         sorted_proba = proba.copy()
         sorted_proba.sort()
         threshold = sorted_proba[1]*(1.0+self.threshold)
-        print('{} thr {}'.format(proba, threshold))
-        if proba[set_number[0]] >= threshold:
-            return self.options[self.data_sets[set_number[0]]]
+        # print('{} thr {}'.format(proba, threshold))
+        #fixme
+        # if proba[set_number[0]] >= threshold:
+        return self.options[self.data_sets[set_number[0]]]
         answer = AnswerMessage(
             text='Ищу в Google https://google.ru/search?q={}'.format(
                 request.quote(message.encode('cp1251'))
