@@ -6,6 +6,7 @@ from nodes.answer_message import AnswerMessage
 
 class ClassifierEqual(ClassifierBase):
     def __init__(self):
+        super(ClassifierEqual, self).__init__()
         self.options = {}
         self.answers = None
         self.answers_actual = False

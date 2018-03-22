@@ -1,4 +1,6 @@
+from typing import Optional
 from user_manager.user import User
+from telegram.user import User as TelegramUser
 
 
 class UserManager:
@@ -10,7 +12,7 @@ class UserManager:
             self.__module__, type(self).__name__, type(self).__name__
         )
 
-    def create_user(self, user):
+    def create_user(self, user: TelegramUser):
         if user.id in self.user:
             raise TypeError('User with id {id} already exists', user.id)
         self.user[user.id] = User(
@@ -20,7 +22,7 @@ class UserManager:
         )
         return self.user[user.id]
 
-    def get_user_by_id(self, user_id):
+    def get_user_by_id(self, user_id: str) -> Optional[User]:
         if user_id in self.user:
             return self.user[user_id]
         return None

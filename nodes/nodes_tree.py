@@ -16,6 +16,7 @@ class NodesTree:
             self.current_node = self.root_node
         if len(self.current_node.sub_nodes) < 1:
             self.current_node = self.root_node
+        print('nodes tree parse_message', answer)
         return answer
 
     def show_tree(self, full_info=True):

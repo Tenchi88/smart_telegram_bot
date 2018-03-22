@@ -28,7 +28,7 @@ class ClassifierBase(object):
     def check_data_set_type(self, data_set):
         if type(data_set) is not self.DataSet:
             raise TypeError(
-                'Wrong data set type. It has to be {}, not {}'.format(
+                'Wrong data set type. It must be {}, not {}'.format(
                     self.DataSet, type(data_set)
                 )
             )

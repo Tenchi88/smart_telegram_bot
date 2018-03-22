@@ -4,7 +4,6 @@ import re
 
 
 def prepare(file_name, max_len=None):
-    max_len = 10
     with open(file_name, 'r') as json_file:
         json_data = json.load(json_file)
         print('Общее количество сырых данных:', len(json_data))

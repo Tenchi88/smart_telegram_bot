@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from classifiers.classifier_base import ClassifierBase
-from classifiers.classifier_equal import ClassifierEqual
-from classifiers.classifier_simple_td_idf import ClassifierSimpleTFIDF
+from classifiers import ClassifierBase
 from nodes.answer_message import AnswerMessage
 import nodes.external_node_functions
 
@@ -50,15 +48,16 @@ class ClassificationNode(object):
         if self.answer is None:
             raise ValueError('Answer has to be not None in {}'.format(self))
         self.answer.options = self.classifier.get_answers()
-        if self.answer.function is not None:
-            answer = eval(
-                'nodes.external_node_functions.' + self.answer.function
-            )(message=message, answer_params=self.answer)
-            if type(answer) is AnswerMessage:
-                return answer
-            return AnswerMessage(text=answer)
-        else:
-            return self.answer
+        return self.answer
+        # if self.answer.function is not None:
+        #     answer = eval(
+        #         'nodes.external_node_functions.' + self.answer.function
+        #     )(message=message, answer_params=self.answer)
+        #     if type(answer) is AnswerMessage:
+        #         return answer
+        #     return AnswerMessage(text=answer)
+        # else:
+        #     return self.answer
 
     def parse_message(self, message):
         if self.classifier is None:

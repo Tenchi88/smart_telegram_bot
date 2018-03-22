@@ -8,10 +8,10 @@ import json
 from os import environ
 import sys
 
-from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
-from telegram.ext import CommandHandler
-from telegram.ext import MessageHandler, Filters
-from telegram.ext import Updater
+from telegram import (ReplyKeyboardMarkup, ReplyKeyboardRemove)
+# from telegram.ext import CommandHandler
+# from telegram.ext import MessageHandler, Filters
+# from telegram.ext import Updater
 
 from logger.bot_logger import BotLogger
 import logger.log_db_adapter
@@ -19,7 +19,7 @@ from nodes.nodes_tree_generator import NodesTreeGenerator
 import nltk
 
 import telegram
-from telegram.error import NetworkError, Unauthorized
+from telegram.error import (NetworkError, Unauthorized)
 
 from dialog_manager.dialog_manager import DialogManager
 
@@ -108,7 +108,7 @@ class SmartBot:
         self.dialog_manager = DialogManager(self.nodes_tree)
 
     # command /start
-    def start(self, bot, update):
+    def start(self, bot: telegram.Bot, update: telegram.Update):
         self.send_message(
             bot,
             update.message.chat_id,
@@ -116,7 +116,7 @@ class SmartBot:
         )
 
     # command /uptime
-    def uptime(self, bot, update):
+    def uptime(self, bot: telegram.Bot, update: telegram.Update):
         bot.send_message(
             chat_id=update.message.chat_id,
             text=u'Время работы: ' + str(
@@ -124,7 +124,7 @@ class SmartBot:
         )
 
     # command /buildtime
-    def buildtime(self, bot, update):
+    def buildtime(self, bot: telegram.Bot, update: telegram.Update):
         bot.send_message(
             chat_id=update.message.chat_id,
             text='Время последней модификации скрипта[\'{}\']: {}'.format(
@@ -135,7 +135,7 @@ class SmartBot:
 
     # voice message parser
     @staticmethod
-    def voice(bot, update):
+    def voice(bot: telegram.Bot, update: telegram.Update):
         bot.send_message(
             chat_id=update.message.chat_id,
             text=u'Получено аудио от ' + str(update.message.from_user)
@@ -150,14 +150,14 @@ class SmartBot:
         voice_file = bot.get_file(update.message.voice.file_id)
         voice_file.download(custom_path='voice_tmp.oga')
 
-    def send_message(self, bot, chat_id, text=None, file=None, options=None):
-        # if options:
-        #     self.custom_keyboard = [val for val in options]
-        #     self.custom_keyboard.append([u'отмена'])
-        #     reply_markup = ReplyKeyboardMarkup(self.custom_keyboard)
-        # else:
-        #     reply_markup = ReplyKeyboardRemove(remove_keyboard=True)
-        #     self.custom_keyboard = None
+    def send_message(
+            self,
+            bot: telegram.Bot,
+            chat_id: str,
+            text: str=None,
+            file: str=None,
+            options: list=None
+    ):
         if options:
             self.custom_keyboard = [val for val in options]
             self.custom_keyboard.append([u'отмена'])
@@ -190,13 +190,15 @@ class SmartBot:
                 )
 
     # non-command text
-    def echo(self, bot):
+    def echo(self, bot: telegram.Bot):
         for update in bot.get_updates(offset=self.update_id, timeout=1):
             self.update_id = update.update_id + 1
 
+            # TODO: change 'not in' > 'in'
             if (
                     len(update.message.entities)
                     and update.message.entities[0].type == 'bot_command'
+                    and update.message.text not in ['/auth']
             ):
                 eval('self.{}(bot, update)'.format(update.message.text[1:]))
                 return
@@ -233,8 +235,9 @@ class SmartBot:
         while True:
             try:
                 self.echo(self.bot)
-            except NetworkError:
-                time.sleep(0.1)
+            except NetworkError as e:
+                print('Network error', e)
+                time.sleep(0.01)
             except Unauthorized:
                 # The user has removed or blocked the bot.
                 self.update_id += 1
@@ -256,8 +259,8 @@ if __name__ == '__main__':
     # nltk.download('stopwords')
     # your_json_config = 'json_configs/base_test.json'
     # your_json_config = 'json_configs/base_test_td_idf.json'
-    your_json_config = 'json_configs/base_test_spacy.json'
-    # your_json_config = 'json_configs/pgu_example.json'
+    # your_json_config = 'json_configs/base_test_spacy.json'
+    your_json_config = 'json_configs/pgu_example.json'
     if os.path.exists(your_json_config):
         chat_bot = SmartBot(logic_config=your_json_config)
     else:

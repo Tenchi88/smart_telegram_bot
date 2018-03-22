@@ -3,10 +3,8 @@
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.base import TransformerMixin
 from sklearn.pipeline import Pipeline
-from sklearn.svm import SVC, LinearSVC
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.neighbors import KNeighborsClassifier
 import stop_words
-# from sklearn.metrics import accuracy_score
 from nltk.corpus import stopwords
 import string
 import re
@@ -21,9 +19,9 @@ from classifiers.classifier_base import ClassifierBase, ClassifierBaseDataSet
 from nodes.answer_message import AnswerMessage
 
 
-class ClassifierSpacy(ClassifierBase):
+class ClassifierKNN(ClassifierBase):
     def __init__(self):
-        super(ClassifierSpacy, self).__init__()
+        super(ClassifierKNN, self).__init__()
         self.data_sets = []
         self.texts = {}
         self.options = {}
@@ -43,14 +41,15 @@ class ClassifierSpacy(ClassifierBase):
             tokenizer=self.tokenizeText,
             ngram_range=(1, 1)
         )
-        self.clf = MultinomialNB()
-        # self.clf = LinearSVC()
-        # self.clf = SVC(probability=True)
+        self.clf = KNeighborsClassifier(
+            n_neighbors=20, weights='uniform',
+            algorithm='auto'#, metric='mahalanobis'
+        )
 
         # the pipeline to clean, tokenize, vectorize, and classify
         self.pipe = Pipeline(
             [
-                ('cleanText', ClassifierSpacy.CleanTextTransformer()),
+                ('cleanText', ClassifierKNN.CleanTextTransformer()),
                 ('vectorizer', self.vectorizer),
                 ('clf', self.clf)
             ]
@@ -60,30 +59,17 @@ class ClassifierSpacy(ClassifierBase):
         return '<{}> Data sets: {}'.format(
             type(self).__name__, self.options)
 
-    def predict(self, message, auto_train=True, verbose=False):
+    def predict(self, message, auto_train=True, verbose=True):
+        if verbose:
+            print('Prediction for message:', message)
         if auto_train and not self.is_trained:
             self.train()
-            if verbose:
-                # print('support_', self.clf.support_)
-                print('coef_', self.clf.coef_)
-                # print('dual_coef_', self.clf.dual_coef_)
-                print('intercept_', self.clf.intercept_)
         preds = self.pipe.predict([message])
         if verbose:
             print(preds)
-            print(message)
         probs = self.pipe.predict_proba([message])
-        # probs = self.pipe.decision_function([message])
-        # probs = self.pipe.score([message], ['Услуги'])
         if verbose:
             print('predict_proba', self.pipe.predict_proba([message]))
-        # print('decision_function', self.pipe.decision_function([message]))
-        # intercept_x_decision = []
-        # for i in range(len(probs[0])):
-        #     intercept_x_decision.append(self.clf.intercept_[i]*probs[0][i])
-        # print('intercept_x_decision', intercept_x_decision)
-        # threshold = sorted_proba[1]*(1.0+self.threshold)
-        # print('{} thr {}'.format(proba, threshold))
         if min(probs[0]) <= self.threshold:
             return self.options[preds[0]]
         answer = AnswerMessage(
@@ -187,19 +173,6 @@ class ClassifierSpacy(ClassifierBase):
         # print('Tokens:', tokens)
         return tokens
 
-    def printNMostInformative(self, vectorizer, clf, N):
-        """Prints features with the highest coefficient values, per class"""
-        feature_names = vectorizer.get_feature_names()
-        coefs_with_fns = sorted(zip(clf.coef_[0], feature_names))
-        topClass1 = coefs_with_fns[:N]
-        topClass2 = coefs_with_fns[:-(N + 1):-1]
-        print('Class 1 best: ')
-        for feat in topClass1:
-            print(feat)
-        print('Class 2 best: ')
-        for feat in topClass2:
-            print(feat)
-
     class DataSet(ClassifierBaseDataSet):
         def __init__(self, train_set):
             if type(train_set) is not str:
@@ -251,7 +224,7 @@ class ClassifierSpacy(ClassifierBase):
         """
 
         def transform(self, X, **transform_params):
-            return [ClassifierSpacy.cleanText(text) for text in X]
+            return [ClassifierKNN.cleanText(text) for text in X]
 
         def fit(self, X, y=None, **fit_params):
             return self
