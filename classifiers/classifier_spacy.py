@@ -83,7 +83,7 @@ class ClassifierSpacy(ClassifierBase):
         #     intercept_x_decision.append(self.clf.intercept_[i]*probs[0][i])
         # print('intercept_x_decision', intercept_x_decision)
         # threshold = sorted_proba[1]*(1.0+self.threshold)
-        # print('{} thr {}'.format(proba, threshold))
+        print('{} thr {}'.format(probs, self.threshold))
         if min(probs[0]) <= self.threshold:
             return self.options[preds[0]]
         answer = AnswerMessage(

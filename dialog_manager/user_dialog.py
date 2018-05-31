@@ -69,6 +69,8 @@ class UserDialog:
                 'self.user.' + answer.function
             )(message=msg, answer_params=answer)
             if type(answer) is AnswerMessage:
+                if answer.go_to is not None:
+                    self.nodes_tree.go_to(msg, answer.go_to)
                 return answer
             return AnswerMessage(text=answer)
         return answer
@@ -99,6 +101,7 @@ class UserDialog:
                 answer = self.nodes_tree.go_to_root(msg)
             else:
                 answer = self.available_modes[self.mode](msg)
+                print('on_message Go to [{}]'.format(answer.go_to))
 
         print(answer)
         return answer, self.nodes_tree.current_node_name

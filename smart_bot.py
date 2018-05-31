@@ -23,6 +23,9 @@ from telegram.error import (NetworkError, Unauthorized)
 
 from dialog_manager.dialog_manager import DialogManager
 
+from helpers.speech_kit import speech2text
+from helpers import voice_api_test
+
 
 class SmartBot:
     def __init__(
@@ -136,19 +139,28 @@ class SmartBot:
     # voice message parser
     @staticmethod
     def voice(bot: telegram.Bot, update: telegram.Update):
-        bot.send_message(
-            chat_id=update.message.chat_id,
-            text=u'Получено аудио от ' + str(update.message.from_user)
-        )
-        bot.send_message(
-            chat_id=update.message.chat_id,
-            text=u'длительностью ' + str(update.message.voice.duration)
-        )
-        bot.send_message(
-            chat_id=update.message.chat_id,
-            text=u'ID файла: ' + update.message.voice.file_id)
+        # bot.send_message(
+        #     chat_id=update.message.chat_id,
+        #     text=u'Получено аудио от ' + str(update.message.from_user)
+        # )
+        # bot.send_message(
+        #     chat_id=update.message.chat_id,
+        #     text=u'длительностью ' + str(update.message.voice.duration)
+        # )
+        # bot.send_message(
+        #     chat_id=update.message.chat_id,
+        #     text=u'ID файла: ' + update.message.voice.file_id)
         voice_file = bot.get_file(update.message.voice.file_id)
-        voice_file.download(custom_path='voice_tmp.oga')
+        voice_path = 'voice_tmp.oga'
+        voice_file.download(custom_path=voice_path)
+        #TODO
+        res = speech2text(voice_path)
+        # res = voice_api_test.speech2text(voice_path)
+        bot.send_message(
+            chat_id=update.message.chat_id,
+            text='[Получено аудио: {}]'.format(res[0][0])
+        )
+        return res[0][0]
 
     def send_message(
             self,
@@ -177,7 +189,8 @@ class SmartBot:
                 chat_id=chat_id,
                 text=text,
                 reply_markup=reply_markup,
-                resize_keyboard=True
+                resize_keyboard=True,
+                parse_mode=telegram.ParseMode.MARKDOWN
             )
 
         if file is not None:
@@ -193,6 +206,13 @@ class SmartBot:
     def echo(self, bot: telegram.Bot):
         for update in bot.get_updates(offset=self.update_id, timeout=1):
             self.update_id = update.update_id + 1
+
+            if type(update.message) is not telegram.Message:
+                continue
+
+            if update.message.voice:
+                update.message.text = self.voice(bot, update)
+                # continue
 
             # TODO: change 'not in' > 'in'
             if (
@@ -260,7 +280,11 @@ if __name__ == '__main__':
     # your_json_config = 'json_configs/base_test.json'
     # your_json_config = 'json_configs/base_test_td_idf.json'
     # your_json_config = 'json_configs/base_test_spacy.json'
-    your_json_config = 'json_configs/pgu_example.json'
+    # your_json_config = 'json_configs/pgu_example.json'
+    # your_json_config = 'json_configs/iptv_example.json'
+    # your_json_config = 'json_configs/iptv_example_search.json'
+    # your_json_config = 'json_configs/smart_home_example.json'
+    your_json_config = 'json_configs/caller.json'
     if os.path.exists(your_json_config):
         chat_bot = SmartBot(logic_config=your_json_config)
     else:

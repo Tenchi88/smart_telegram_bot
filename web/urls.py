@@ -10,8 +10,11 @@ from web.schema import schema
 
 from nodes_app import views as nodes_views
 
+from api.base_api import bot_base_api
+
 urlpatterns = [
     url(r'^$', nodes_views.show_nodes, name='index'),
+    url(r'^bot_api', bot_base_api, name='api'),
     url(r'^admin/', admin.site.urls),
     url(r'^graphql', GraphQLView.as_view(graphiql=True, schema=schema)),
     url(r'^nodes/$', nodes_views.show_nodes),

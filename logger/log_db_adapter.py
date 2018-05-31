@@ -350,3 +350,4 @@ class LogDBAdapter:
 
     def check_balance_by_telegram_id(self, telegram_id):
         return self.find_user_by_telegram_id(telegram_id).balance
+

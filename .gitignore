@@ -186,3 +186,8 @@ train_sets/*
 db/*.db
 *.sqlite3
 web/django_private_settings.py
+
+# Exclude audio
+*.oga
+*.ogg
+*.wav

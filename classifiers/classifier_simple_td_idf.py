@@ -78,7 +78,12 @@ class ClassifierSimpleTFIDF(ClassifierBase):
                 target_text.append(ind)
 
         self.count_vect = CountVectorizer()
-        x_train_counts = self.count_vect.fit_transform(data_text)
+        try:
+            x_train_counts = self.count_vect.fit_transform(data_text)
+        except Exception as e:
+            print(self.data_sets)
+            print(e)
+            raise e
 
         self.tfidf_transformer = TfidfTransformer()
         x_train_tfidf = self.tfidf_transformer.fit_transform(x_train_counts)

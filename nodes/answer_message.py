@@ -1,21 +1,25 @@
 # -*- coding: utf-8 -*-
 
+
 class AnswerMessage(object):
     def __init__(
             self,
             text=None,
             file=None,
             options=None,
-            function_name=None
+            function_name=None,
+            go_to=None,
     ):
         AnswerMessage._param_type_check('Text', text, str)
         AnswerMessage._param_type_check('File', file, str)
         AnswerMessage._param_type_check('Options', options, list)
         AnswerMessage._param_type_check('Function', function_name, str)
+        AnswerMessage._param_type_check('Go to', go_to, str)
         self.text = text
         self.file = file
         self.options = options
         self.function = function_name
+        self.go_to = go_to
 
     @staticmethod
     def _param_type_check(param_name, val, _type):
@@ -34,5 +38,6 @@ class AnswerMessage(object):
             res += ' Options: \'{}\''.format(self.options)
         if self.function is not None:
             res += ' Function: \'{}\''.format(self.function)
+        if self.go_to is not None:
+            res += ' Go to: \'{}\''.format(self.go_to)
         return res
-
